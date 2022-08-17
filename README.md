@@ -1,5 +1,5 @@
 # Bfmq
-学习使用的玩具帧同步服务，早期项目  
+从实际项目中剥离和重实现的玩具帧同步服务，早期项目，仅供学习使用  
 a tiny websocket lockstep game server for moba rts fps ....
 very fast!!!
 
