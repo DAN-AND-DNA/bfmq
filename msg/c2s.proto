@@ -1,0 +1,186 @@
+syntax = "proto2";
+package msg;
+
+enum c2stype {
+    TYPE_MAIN = 0;
+    TYPE_ROOM = 1;
+}
+
+enum c2scmd {
+    CMD_GOOD_GAME = 0;
+    
+    //10001 - 20000
+    CMD_LOGIN_GET_OPENID_REQ = 10001;
+    CMD_LOGIN_GET_OPENID_RES = 10002;
+    CMD_LOGIN_GET_DATA_REQ  = 10003;
+    CMD_LOGIN_GET_DATA_RES = 10004;
+    CMD_LOGIN_HEARTBEAT_REQ = 10005;
+    CMD_LOGIN_HEARTBEAT_RES = 10006;
+    //20001 - 30000
+    CMD_GAME_JOINROOM_REQ = 20001;
+    CMD_GAME_JOINROOM_RES = 20002;
+    CMD_GAME_PLAYERJOIN_NOTIFY = 20003;
+    CMD_GAME_PLAYERJOIN_NOTIFY_PLACEHOLDER = 20004;
+    CMD_GAME_PLAYERLEAVE_NOTIFY = 20005;
+    CMD_GAME_PLAYERLEAVE_NOTIFY_PLACEHOLDER = 20006;
+    CMD_GAME_ENTERGAME_NOTIFY = 20007;
+    CMD_GAME_ENTERGAME_NOTIFY_PLACEHOLDER = 20008;
+    CMD_GAME_INPUT_NOTIFY = 20009;
+    CMD_GAME_INPUT_NOTIFY_PLACEHOLDER = 20010;
+    CMD_GAME_READY_REQ = 20011;
+    CMD_GAME_READY_RES = 20012;
+    CMD_GAME_STARTGAME_NOTIFY = 20013;
+    CMD_GAME_STARTGAME_NOTIFY_PLACEHOLDER = 20014;
+    CMD_GAME_INPUT_REQ = 20015;
+    CMD_GAME_INPUT_RES = 20016;
+}
+
+// CMD_LOGIN_GET_OPENID_REQ
+message GetOpenidReq {
+    optional string Code = 1;
+}
+
+// CMD_LOGIN_GET_OPENID_RES
+message GetOpenidRes {
+    optional string Openid = 1;
+}
+
+// CMD_LOGIN_GET_DATA_REQ
+message GetDataReq {
+    optional string Openid = 1;
+}
+
+// CMD_LOGIN_GET_DATA_RES
+message GetDataRes {
+    optional msg.C2SPlayer Player = 1;
+}
+
+// CMD_LOGIN_HEARTBEAT_REQ
+message HeartBeatReq{
+}
+
+// CMD_LOGIN_HEARTBEAT_RES
+message HeartBeatRes{
+}
+
+// CMD_GAME_JOINROOM_REQ
+message JoinRoomReq {
+}
+
+// CMD_GAME_JOINROOM_RES
+message JoinRoomRes {
+    required uint32 Roomid = 1;
+    required uint32 Playerid = 2;
+    required uint32 Seed = 3;
+}
+
+// CMD_GAME_READY_REQ
+message ReadyReq {
+    required uint32 Roomid = 1;
+}
+
+// CMD_GAME_READY_RES
+message ReadyRes {
+    required uint32 Roomid = 1;
+}
+
+enum playertype {
+    MAN = 0;
+    FAKE = 1;
+}
+
+enum action {
+    IDLE = 0;
+    MOVE = 1;
+}
+
+// CMD_GAME_PLAYERJOIN_NOTIFY
+message PlayerJoinNotify {
+    required uint32 Playerid = 1;
+    required playertype Type = 2;
+    required string Nickname = 3;
+    required string AvatarUrl = 4;
+}
+
+// CMD_GAME_PLAYERLEAVE_NOTIFY
+message PlayerLeaveNotify {
+    optional uint32 Playerid = 1;
+}
+
+// CMD_GAME_ENTERGAME_NOTIFY
+message EnterGameNotify {
+    required uint32 Roomid = 1;
+}
+
+message InputData {
+    optional uint32 Playerid = 1;
+    optional action Action = 2;
+    optional int32 X = 3;
+    optional int32 Y = 4;
+}
+
+// CMD_GAME_INPUT_NOTIFY
+message InputNotify {
+    required int32 Step = 1;
+    repeated InputData InputList = 2;
+
+}
+
+// CMD_GAME_STARTGAME_NOTIFY
+message StartGameNotify {
+    optional uint64 Time = 1;
+}
+
+// CMD_GAME_INPUT_REQ
+message InputReq {
+    required uint32 Roomid = 1;
+    required InputData Input = 2;
+}
+
+// CMD_GAME_INPUT_RES
+message InputRes {
+}
+
+message C2SPlayer {
+    optional uint64 Userid = 1;
+    optional string Nickname = 2;
+    optional string AvatarUrl = 3;
+    optional uint32 Gold = 4;
+}
+
+// 协议头
+message C2SHead {
+    required msg.c2stype Type = 1;
+    required msg.c2scmd Cmd = 2;
+    optional uint32     Seq = 3;
+}
+
+message C2SRes {
+    optional int32 Res = 1;          // error: -1  success: 0
+    optional int32 ErrCode = 2;      // error code
+}
+
+
+// 协议
+message C2S {
+    // head 
+    required msg.C2SHead            Head           = 1;
+    optional msg.C2SRes             Result         = 2;
+    optional msg.GetOpenidReq       GetOpenidReq   = 3;
+    optional msg.GetOpenidRes       GetOpenidRes   = 4;
+    optional msg.GetDataReq         GetDataReq     = 5;
+    optional msg.GetDataRes         GetDataRes     = 6;
+    optional msg.HeartBeatReq       HeartBeatReq   = 7;
+    optional msg.HeartBeatRes       HeartBeatRes   = 8;
+    optional msg.JoinRoomReq        JoinRoomReq    = 9;
+    optional msg.JoinRoomRes        JoinRoomRes    = 10;
+    optional msg.PlayerJoinNotify   PlayerJoinNotify = 11;
+    optional msg.PlayerLeaveNotify  PlayerLeaveNotify = 12;
+    optional msg.EnterGameNotify    EnterGameNotify = 13;
+    optional msg.InputNotify        InputNotify  = 14;
+    optional msg.ReadyReq           ReadyReq = 15;
+    optional msg.ReadyRes           ReadyRes = 16;
+    optional msg.StartGameNotify    StartGameNotify = 17;
+    optional msg.InputReq           InputReq = 18;
+    optional msg.InputRes           InputRes = 19;
+}

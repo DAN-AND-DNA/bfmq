@@ -1,0 +1,11 @@
+syntax = "proto2";
+
+package db;
+
+message PlayerDB {
+    optional uint64 Userid = 1;
+    optional string Openid = 2;
+    optional string Nickname = 3;
+    optional string AvatarUrl = 4;
+    optional uint32 Gold = 5;
+}
